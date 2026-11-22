@@ -67,12 +67,12 @@ jobs:
           mkdir -p build/logs
           set -o pipefail
           PENDO_CONFIRM=yes PENDO_FEDORA=44 ./build/build-iso.sh 2>&1 | tee build/logs/iso-build.log
-      - name: Upload ISO build log on failure
+      - name: Publish ISO build log on failure
         if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: iso-build-failure-log
-          path: build/logs/iso-build.log
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 -c 'import os,json,urllib.request; t=os.environ["GITHUB_TOKEN"]; r=os.environ["GITHUB_REPOSITORY"]; l=open("build/logs/iso-build.log").read(); l=l[-60000:] if len(l)>60000 else l; d={"title":"ISO build failure log","body":"```\n"+l+"\n```"}; q=urllib.request.Request("https://api.github.com/repos/"+r+"/issues",data=json.dumps(d).encode(),headers={"Authorization":"Bearer "+t,"Accept":"application/vnd.github+json","Content-Type":"application/json"}); print(urllib.request.urlopen(q).read().decode())'
 
       - name: Upload ISO artifact
         uses: actions/upload-artifact@v4
