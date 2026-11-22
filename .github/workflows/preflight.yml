@@ -69,12 +69,30 @@ jobs:
           PENDO_CONFIRM=yes PENDO_FEDORA=44 ./build/build-iso.sh 2>&1 | tee build/logs/iso-build.log
       - name: Publish ISO build log on failure
         if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-          git add build/logs/iso-build.log || true
-          git commit -m "ci: iso build failure log [skip ci]" || true
-          git push origin HEAD:main || true
+          python3 -c '
+import os, json, urllib.request
+token = os.environ.get("GITHUB_TOKEN","")
+repo = os.environ.get("GITHUB_REPOSITORY","")
+try:
+    log = open("build/logs/iso-build.log").read()
+except Exception as e:
+    log = "could not read log: " + str(e)
+if len(log) > 60000:
+    log = log[-60000:]
+data = {"title": "ISO build failure log", "body": "```\n" + log + "\n```"}
+req = urllib.request.Request(
+    "https://api.github.com/repos/" + repo + "/issues",
+    data=json.dumps(data).encode(),
+    headers={"Authorization": "Bearer " + token, "Accept": "application/vnd.github+json", "Content-Type": "application/json"})
+try:
+    with urllib.request.urlopen(req) as r:
+        print(r.read().decode())
+except Exception as e:
+    print("ISSUE_CREATE_FAILED:", e)
+'
       - name: Upload ISO artifact
         uses: actions/upload-artifact@v4
         with:
