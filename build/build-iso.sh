@@ -26,6 +26,11 @@ if ! git ls-remote --heads "$KS_URL" "refs/heads/$KS_BRANCH" | grep -q .; then
 fi
 git clone --branch "$KS_BRANCH" "$KS_URL" "$KS/upstream"
 cp "$KS"/upstream/*.ks "$KS"/
+# Fedora's live-workstation kickstart redefines the root partition that
+# fedora-live-base.ks already defines. Keep the workstation size (8576 MiB)
+# and make the filesystem type explicit.
+sed -i -E '/^[[:space:]]*part[[:space:]]+\/[[:space:]]/d' "$KS/upstream/fedora-live-base.ks"
+sed -i -E 's/^(part[[:space:]]+\/[[:space:]]+--size[[:space:]]+8576)[[:space:]]*$/\1 --fstype ext4/' "$KS/upstream/fedora-live-workstation.ks"
 cp "$KSDIR"/pendo-live.ks "$KSDIR"/pendo-payload.ks "$KSDIR"/pendo-repo.ks "$KS"/
 ( cd "$KS" && ksflatten -v "F$PENDO_FEDORA" -c pendo-live.ks -o flat-pendo-live.ks && ksvalidator -v "F$PENDO_FEDORA" flat-pendo-live.ks )
 
