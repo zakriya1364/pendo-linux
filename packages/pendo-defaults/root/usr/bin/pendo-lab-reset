@@ -1,0 +1,27 @@
+#!/bin/bash
+# Clears browser cache, thumbnails and recent-file lists for student accounts
+# that are not currently logged in. Never touches Portfolio or Documents.
+set -u
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Run as root: sudo pendo-lab-reset --force" >&2
+    exit 1
+fi
+if [ "${1:-}" != "--force" ]; then
+    echo "This clears browser cache, thumbnails and recent-file lists for all"
+    echo "student home directories. Run: sudo pendo-lab-reset --force"
+    exit 1
+fi
+for home in /home/*/; do
+    [ -d "$home" ] || continue
+    uid=$(stat -c %u "$home")
+    [ "$uid" -ge 1000 ] || continue
+    owner=$(stat -c %U "$home")
+    state=$(loginctl show-user "$owner" -p State --value 2>/dev/null || true)
+    case "$state" in
+        active|online|closing) echo "Skipping $owner (logged in)"; continue ;;
+    esac
+    echo "Cleaning $home"
+    rm -rf -- "${home}.cache/mozilla" "${home}.cache/thumbnails"
+    rm -f -- "${home}.local/share/recently-used.xbel"
+done
+echo "Lab reset complete."

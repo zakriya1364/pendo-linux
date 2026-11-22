@@ -1,0 +1,14 @@
+[Unit]
+Description=Pendo optional educational Flatpak apps (needs internet)
+ConditionPathExists=!/var/lib/pendo/flatpak-apps.done
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+Nice=19
+IOSchedulingClass=idle
+ExecStart=/usr/libexec/pendo/flatpak-apps
+
+[Install]
+WantedBy=multi-user.target

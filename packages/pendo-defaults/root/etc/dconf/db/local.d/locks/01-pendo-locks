@@ -1,0 +1,5 @@
+/org/gnome/shell/enabled-extensions
+/org/gnome/desktop/media-handling/autorun-never
+/org/gnome/desktop/media-handling/automount-open
+/org/gnome/desktop/screensaver/lock-enabled
+/org/gnome/desktop/session/idle-delay

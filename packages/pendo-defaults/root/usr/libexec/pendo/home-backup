@@ -1,0 +1,6 @@
+#!/bin/bash
+# Copies /home to PENDO_BACKUP_TARGET (set in /etc/pendo/backup.conf).
+# Deliberately no --delete: an empty or unmounted /home must never wipe backups.
+set -eu
+: "${PENDO_BACKUP_TARGET:?PENDO_BACKUP_TARGET is not set in /etc/pendo/backup.conf}"
+exec rsync -a --partial -e "ssh -o BatchMode=yes" /home/ "$PENDO_BACKUP_TARGET/"

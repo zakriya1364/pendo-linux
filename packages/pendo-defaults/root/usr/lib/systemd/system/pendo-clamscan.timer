@@ -1,0 +1,10 @@
+[Unit]
+Description=Weekly Pendo ClamAV scan
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+RandomizedDelaySec=2h
+
+[Install]
+WantedBy=timers.target

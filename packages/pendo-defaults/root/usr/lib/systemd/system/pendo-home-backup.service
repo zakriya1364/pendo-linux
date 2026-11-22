@@ -1,0 +1,10 @@
+[Unit]
+Description=Pendo /home backup (runs only if /etc/pendo/backup.conf exists)
+ConditionPathExists=/etc/pendo/backup.conf
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/pendo/backup.conf
+Nice=10
+IOSchedulingClass=idle
+ExecStart=/usr/libexec/pendo/home-backup

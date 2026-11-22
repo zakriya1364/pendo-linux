@@ -1,0 +1,53 @@
+name: Pendo preflight and RPM build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  preflight:
+    name: Static validation (Fedora 44)
+    runs-on: ubuntu-latest
+    container: fedora:44
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build tools
+        run: |
+          dnf -y install pykickstart shellcheck rpm-build createrepo_c tar python3
+      - name: Run preflight
+        run: |
+          chmod +x build/*.sh
+          PENDO_FEDORA=44 ./build/preflight.sh
+      - name: Build pendo-defaults RPM
+        run: |
+          ./build/build-rpm.sh
+      - name: Upload RPM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pendo-defaults-rpm
+          path: build/repo/*.rpm
+
+  iso:
+    name: Build live ISO (manual, Fedora host required)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    container:
+      image: fedora:44
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ISO build tools
+        run: |
+          dnf -y install lorax-lmc-novirt pykickstart git rpm-build createrepo_c
+      - name: Run preflight
+        run: PENDO_CONFIRM=yes PENDO_FEDORA=44 ./build/preflight.sh || true
+      - name: Build ISO
+        run: |
+          PENDO_CONFIRM=yes PENDO_FEDORA=44 ./build/build-iso.sh
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pendo-linux-iso
+          path: build/out/**/*.iso

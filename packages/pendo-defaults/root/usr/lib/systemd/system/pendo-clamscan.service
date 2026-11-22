@@ -1,0 +1,13 @@
+[Unit]
+Description=Pendo weekly ClamAV scan of /home
+ConditionPathExistsGlob=|/var/lib/clamav/main.cvd
+ConditionPathExistsGlob=|/var/lib/clamav/main.cld
+
+[Service]
+Type=oneshot
+Nice=19
+IOSchedulingClass=idle
+CPUQuota=50%
+# clamscan exits 1 when it finds something; that is a result, not a failure.
+SuccessExitStatus=1
+ExecStart=/usr/bin/clamscan --recursive --infected --log=/var/log/pendo-clamscan.log /home

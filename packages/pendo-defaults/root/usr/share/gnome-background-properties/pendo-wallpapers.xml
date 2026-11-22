@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
+<wallpapers>
+  <wallpaper deleted="false">
+    <name>Pendo Linux Default</name>
+    <filename>/usr/share/backgrounds/pendo/pendo-default.webp</filename>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#0b1f3a</pcolor>
+    <scolor>#0b1f3a</scolor>
+  </wallpaper>
+</wallpapers>

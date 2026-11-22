@@ -1,0 +1,49 @@
+# Pendo Linux system-wide GNOME defaults (compiled by `dconf update`).
+# Values must be valid GVariant text; unsigned ints need an explicit type.
+
+[org/gnome/shell]
+enabled-extensions=['dash-to-dock@micxgx.gmail.com']
+# Entries that are not installed are ignored by GNOME Shell, so optional apps
+# (Pendo Exam, Flatpak apps) can be listed here safely.
+favorite-apps=['org.gnome.Nautilus.desktop', 'org.mozilla.firefox.desktop', 'firefox.desktop', 'org.gnome.Settings.desktop', 'libreoffice-writer.desktop', 'libreoffice-calc.desktop', 'org.kde.gcompris.desktop', 'org.geogebra.GeoGebra.desktop', 'edu.mit.Scratch.desktop', 'pendo-exam.desktop']
+
+[org/gnome/shell/extensions/dash-to-dock]
+dock-position='BOTTOM'
+dock-fixed=false
+autohide=true
+intellihide=true
+extend-height=false
+dash-max-icon-size=48
+show-trash=false
+show-mounts=false
+
+[org/gnome/desktop/interface]
+enable-hot-corners=false
+
+[org/gnome/desktop/background]
+picture-uri='file:///usr/share/backgrounds/pendo/pendo-default.webp'
+picture-uri-dark='file:///usr/share/backgrounds/pendo/pendo-default.webp'
+picture-options='zoom'
+
+[org/gnome/desktop/screensaver]
+lock-enabled=true
+lock-delay=uint32 30
+
+[org/gnome/desktop/media-handling]
+# No autorun / auto-open of removable media (malware vector in shared labs).
+autorun-never=true
+automount-open=false
+
+[org/gnome/desktop/privacy]
+old-files-age=uint32 30
+remove-old-temp-files=true
+remove-old-trash-files=true
+
+[org/gnome/settings-daemon/plugins/power]
+sleep-inactive-ac-timeout=1800
+sleep-inactive-ac-type='suspend'
+sleep-inactive-battery-timeout=900
+sleep-inactive-battery-type='suspend'
+
+[org/gnome/desktop/session]
+idle-delay=uint32 600
