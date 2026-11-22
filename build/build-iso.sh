@@ -4,7 +4,7 @@
 # Never run this on your everyday machine.
 set -euo pipefail
 . "$(dirname "$0")/common.sh"
-trap 'rc=$?; if [ $rc -ne 0 ]; then echo "===== livemedia log tail ====="; tail -n 200 "$ROOT"/build/logs/livemedia-*.log 2>/dev/null || true; for f in /tmp/anaconda.log /tmp/packaging.log /tmp/program.log /tmp/storage.log /var/log/anaconda/*.log; do if [ -f "$f" ]; then echo "===== $f ====="; tail -n 300 "$f"; fi; done; find / -type f \( -name "packaging.log" -o -name "anaconda.log" \) 2>/dev/null | head; fi; exit $rc' EXIT
+trap 'rc=$?; if [ $rc -ne 0 ]; then echo "===== livemedia log tail ====="; tail -n 200 "$ROOT"/build/logs/livemedia-*.log 2>/dev/null || true; for f in /tmp/anaconda.log /tmp/packaging.log /tmp/program.log /tmp/storage.log /var/log/anaconda/*.log "$ROOT"/build/logs/anaconda/*.log; do if [ -f "$f" ]; then echo "===== $f ====="; tail -n 500 "$f"; fi; done; fi; exit $rc' EXIT
 
 [ "$(id -u)" -eq 0 ] || { echo "Run as root in the build VM: sudo $0"; exit 1; }
 . /etc/os-release
