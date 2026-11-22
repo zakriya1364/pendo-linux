@@ -4,6 +4,7 @@
 # Never run this on your everyday machine.
 set -euo pipefail
 . "$(dirname "$0")/common.sh"
+trap 'rc=$?; if [ $rc -ne 0 ]; then echo "===== livemedia log tail ====="; tail -n 200 "$ROOT"/build/logs/livemedia-*.log 2>/dev/null || true; fi; exit $rc' EXIT
 
 [ "$(id -u)" -eq 0 ] || { echo "Run as root in the build VM: sudo $0"; exit 1; }
 . /etc/os-release
