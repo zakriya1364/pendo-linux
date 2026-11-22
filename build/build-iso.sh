@@ -4,7 +4,7 @@
 # Never run this on your everyday machine.
 set -euo pipefail
 . "$(dirname "$0")/common.sh"
-trap 'rc=$?; if [ $rc -ne 0 ]; then echo "===== livemedia log tail ====="; tail -n 200 "$ROOT"/build/logs/livemedia-*.log 2>/dev/null || true; for f in /tmp/anaconda.log /tmp/packaging.log /tmp/program.log /tmp/storage.log /var/log/anaconda/*.log "$ROOT"/build/logs/anaconda/*.log; do if [ -f "$f" ]; then echo "===== $f ====="; tail -n 500 "$f"; fi; done; fi; exit $rc' EXIT
+trap 'rc=$?; if [ $rc -ne 0 ]; then echo "===== livemedia log tail ====="; tail -n 200 "$ROOT"/build/logs/livemedia-*.log 2>/dev/null || true; echo "===== root password / chpasswd references ====="; grep -Rni "chpasswd\|rootpw\|locked" "$ROOT"/build/logs/anaconda 2>/dev/null || true; for f in /tmp/anaconda.log /tmp/packaging.log /tmp/program.log /tmp/storage.log /var/log/anaconda/*.log "$ROOT"/build/logs/anaconda/*.log; do if [ -f "$f" ]; then echo "===== $f ====="; tail -n 500 "$f"; fi; done; fi; exit $rc' EXIT
 
 [ "$(id -u)" -eq 0 ] || { echo "Run as root in the build VM: sudo $0"; exit 1; }
 . /etc/os-release
@@ -31,6 +31,7 @@ cp "$KS"/upstream/*.ks "$KS"/
 # fedora-live-base.ks already defines. Increase the workstation root size to 12288 MiB
 # and make the filesystem type explicit.
 sed -i -E '/^[[:space:]]*part[[:space:]]+\/[[:space:]]/d' "$KS/fedora-live-base.ks"
+sed -i -E 's/^rootpw --lock --iscrypted locked$/rootpw --lock/' "$KS/fedora-live-base.ks"
 sed -i -E 's/^(part[[:space:]]+\/[[:space:]]+--size)[[:space:]]+8576[[:space:]]*$/\1 12288 --fstype ext4/' "$KS/fedora-live-workstation.ks"
 cp "$KSDIR"/pendo-live.ks "$KSDIR"/pendo-payload.ks "$KSDIR"/pendo-repo.ks "$KS"/
 ( cd "$KS" && ksflatten -v "F$PENDO_FEDORA" -c pendo-live.ks -o flat-pendo-live.ks && ksvalidator -v "F$PENDO_FEDORA" flat-pendo-live.ks )
