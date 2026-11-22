@@ -18,7 +18,13 @@ done
 "$ROOT/build/build-rpm.sh"
 
 KS="$WORK/ks"; rm -rf "$KS"; mkdir -p "$KS"
-git clone --depth 1 --branch "f$PENDO_FEDORA" https://pagure.io/fedora-kickstarts.git "$KS/upstream"
+KS_URL="https://forge.fedoraproject.org/releng/spin-kickstarts.git"
+KS_BRANCH="f$PENDO_FEDORA"
+if ! git ls-remote --heads "$KS_URL" "refs/heads/$KS_BRANCH" | grep -q .; then
+  echo "No kickstart branch $KS_BRANCH; falling back to f43 (last kickstart-based Fedora branch)"
+  KS_BRANCH="f43"
+fi
+git clone --branch "$KS_BRANCH" "$KS_URL" "$KS/upstream"
 cp "$KS"/upstream/*.ks "$KS"/
 cp "$KSDIR"/pendo-live.ks "$KSDIR"/pendo-payload.ks "$KSDIR"/pendo-repo.ks "$KS"/
 ( cd "$KS" && ksflatten -v "F$PENDO_FEDORA" -c pendo-live.ks -o flat-pendo-live.ks && ksvalidator -v "F$PENDO_FEDORA" flat-pendo-live.ks )
