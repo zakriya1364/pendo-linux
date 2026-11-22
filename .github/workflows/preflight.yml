@@ -22,15 +22,12 @@ jobs:
           mkdir -p build/logs
           set -o pipefail
           PENDO_FEDORA=44 ./build/preflight.sh 2>&1 | tee build/logs/preflight.log
-      - name: Publish preflight log on failure
+      - name: Upload preflight log on failure
         if: failure()
-        run: |
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-          git checkout -B ci-debug
-          git add build/logs/preflight.log
-          git commit -m "ci: preflight failure log [skip ci]" || true
-          git push origin ci-debug --force || true
+        uses: actions/upload-artifact@v4
+        with:
+          name: preflight-failure-log
+          path: build/logs/preflight.log
       - name: Build pendo-defaults RPM
         run: |
           ./build/build-rpm.sh
