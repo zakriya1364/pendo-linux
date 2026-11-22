@@ -6,6 +6,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  issues: write
+
 jobs:
   preflight:
     name: Static validation (Fedora 44)
@@ -63,12 +67,14 @@ jobs:
           mkdir -p build/logs
           set -o pipefail
           PENDO_CONFIRM=yes PENDO_FEDORA=44 ./build/build-iso.sh 2>&1 | tee build/logs/iso-build.log
-      - name: Upload ISO build log on failure
+      - name: Publish ISO build log on failure
         if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: iso-build-failure-log
-          path: build/logs/iso-build.log
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add build/logs/iso-build.log || true
+          git commit -m "ci: iso build failure log [skip ci]" || true
+          git push origin HEAD:main || true
       - name: Upload ISO artifact
         uses: actions/upload-artifact@v4
         with:
