@@ -2,7 +2,7 @@
 # First-boot helper: installs optional Flatpak apps when internet is available.
 # Safe to fail offline; the unit retries on the next boot until it succeeds.
 set -eu
-APPS="org.geogebra.GeoGebra edu.mit.Scratch"
+APPS="org.geogebra.GeoGebra edu.mit.Scratch com.tux4kids.tuxtype"
 flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 # shellcheck disable=SC2086
 flatpak install --system -y --noninteractive flathub $APPS

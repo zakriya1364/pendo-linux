@@ -44,7 +44,8 @@ gcompris-qt
 stellarium
 kalzium
 tuxmath
-tuxtype
+# tuxtype: provided as an optional Flatpak (com.tux4kids.tuxtype)
+# via pendo-flatpak-apps.service on first boot; not in the mandatory ISO set.
 klavaro
 krita
 gimp

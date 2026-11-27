@@ -25,7 +25,7 @@ optional backup/scan/Flatpak setup, and small administration helpers.
 
 %install
 mkdir -p %{buildroot}
-cp -a root/. %{buildroot}/
+cp -a root/. %{buildroot}
 mkdir -p %{buildroot}/etc/skel/Portfolio/Code \
          %{buildroot}/etc/skel/Portfolio/Media \
          %{buildroot}/etc/skel/Portfolio/Documents
@@ -50,7 +50,10 @@ dconf update || :
 /usr/share/gnome-background-properties/pendo-wallpapers.xml
 /usr/share/icons/hicolor/scalable/apps/pendo-logo.svg
 /usr/share/pendo
+/usr/share/plymouth/themes/pendo
 /usr/libexec/pendo
+/usr/share/sounds/pendo
+%config(noreplace) /etc/xdg/fastfetch/config.jsonc
 /usr/bin/pendo-lab-reset
 %{_unitdir}/pendo-*.service
 %{_unitdir}/pendo-*.timer
