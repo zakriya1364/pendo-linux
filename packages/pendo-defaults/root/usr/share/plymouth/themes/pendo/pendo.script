@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+# pendo.script - Pendo Linux boot splash script
+# Requires: plymouth-plugin-script
+# Boot progress: dark navy background, centred logo, simple progress indicator
+
+import sys
+import math
+
+# Do not use heavy effects (old hardware compatibility)
+
+def initialise():
+    """Called once at the start of the boot splash."""
+    # Set background to dark navy (RGB: 11, 31, 58 = #0b1f3a)
+    plymouth.set_background_colour(11, 31, 58)
+
+def draw():
+    """Called on each frame to render the splash."""
+    # Clear the screen with the background colour
+    plymouth.clear()
+
+    # Draw the Pendo logo (rendered from branding/pendo-logo.svg)
+    # The logo is expected at /usr/share/plymouth/themes/pendo/logo.png
+    logo = plymouth.load_image("/usr/share/plymouth/themes/pendo/logo.png")
+    if logo:
+        screen_width, screen_height = plymouth.get_screen_size()
+        logo_width, logo_height = plymouth.get_image_size(logo)
+        x = (screen_width - logo_width) // 2
+        y = (screen_height - logo_height) // 2
+        plymouth.draw_image(logo, x, y)
+
+def update(percentage):
+    """Called when boot progress changes."""
+    # Simple progress indicator - no heavy effects
+    # Percentage ranges from 0 to 100
+    # We could draw a spinner or progress bar here
+    pass
+
+def finalise():
+    """Called once at the end of the boot splash."""
+    pass

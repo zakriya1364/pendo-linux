@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Pendo
+Description=Pendo Linux boot splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/pendo
+ScriptFile=/usr/share/plymouth/themes/pendo/pendo.script
