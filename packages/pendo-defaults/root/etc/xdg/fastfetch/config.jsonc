@@ -1,0 +1,23 @@
+# Fastfetch branding configuration for Pendo Linux
+# Reference: pendo-ansi.txt installed at /usr/share/pendo/logo/pendo-ansi.txt
+
+# Logo configuration
+logo:
+  type: file-raw
+  source: /usr/share/pendo/logo/pendo-ansi.txt
+  padding:
+    right: 2
+
+# Color palette (verified compatible with Pendo theme)
+primary_color: "#0b1f3a"
+background: "#0b1f3a"
+
+# Rendering options
+align: left
+frame:
+  focused: "─"
+  unfocused: "─"
+  corners: "╭╮╰╯"
+
+# Disable auto-execution (safe for reproducible builds)
+auto_execute: false

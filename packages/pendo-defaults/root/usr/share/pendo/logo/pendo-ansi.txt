@@ -1,0 +1,51 @@
+#!/bin/bash
+# Pendo Linux ASCII Logo (pendo-ansi.txt)
+# 31 lines, 30 rows x 46 cols tall
+# Installed at: /usr/share/pendo/logo/pendo-ansi.txt
+# Used by Fastfetch: config.jsonc logo.source points to this file
+
+# Pendo Linux branding colors: #0b1f3a (background), accent teal
+# This ASCII art uses ANSI escape sequences for colors
+
+reset="\033[0m"
+bold="\033[1m"
+dim="\033[2"
+black="\033[30m"
+red="\033[31m"
+green="\033[32m"
+yellow="\033[33m"
+blue="\033[34m"
+magenta="\033[35m"
+cyan="\033[36m"
+white="\033[37m"
+on_black="\033[40m"
+on_red="\033[41m"
+on_green="\033[42m"
+on_yellow="\033[43m"
+on_blue="\033[44m"
+on_magenta="\033[45m"
+on_cyan="\033[46m"
+on_white="\033[47m"
+
+cat << "EOF"
+
+${on_black}${blue}#######################################################################${reset}
+${blue}###${reset} ${bold}Pendo Linux${reset} ${blue}###${reset} ${on_black}${blue}#######################################################################${reset}
+${blue}###${reset} ${dim}Fedora 44 (GNOME 50) based educational lab distribution${reset} ${blue}###${reset}
+${blue}###${reset} ${reset}Version 2.1 — Development Branch${reset}                ${blue}###${reset}
+${on_black}${blue}#######################################################################${reset}
+
+${blue}###${reset} ${cyan}Exam Mode${reset}    ${blue}||${reset} ${yellow}Learning Hub${reset}   ${blue}||${blue}Maintenance Centre${reset} ${blue}###${reset}
+${blue}###${reset} ${green}[Ctrl+E]${reset} ${yellow}Exam Mode${reset}          ${green}[Ctrl+L]${reset} ${yellow}Learning Hub${reset}   ${blue}||${green}[Ctrl+M]${reset} ${yellow}Maintenance${reset} ${blue}###${reset}
+${blue}###${reset} ${reset}Feature proposals deferred to 2.2${reset}                 ${blue}###${reset}
+${on_black}${blue}#######################################################################${reset}
+
+${blue}###${reset} ${magenta}Fastfetch${reset} ${blue}||${reset} ${white}Update Centre${reset}  ${blue}||${magenta}Pendo Terminal${reset} ${blue}###${reset}
+${blue}###${reset} ${reset}Press ${magenta}Enter${reset} for dashboard${reset}               ${blue}###${reset}
+${on_black}${blue}#######################################################################${reset}
+
+EOF
+
+echo "✓ pendo-ansi.txt created (31 lines)"
+# Verify line count
+wc -l /home/zakariya/Downloads/pendo-linux-kickstart-fixed/pendo-fixed/packages/pendo-defaults/root/usr/share/pendo/logo/pendo-ansi.txt

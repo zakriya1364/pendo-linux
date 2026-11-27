@@ -1,0 +1,124 @@
+#!/bin/bash
+# pendo-update-check — Update Centre prototype
+# Checks GitHub Releases for version availability
+# Does NOT download or install RPMs
+#
+# Usage: pendo-update-check [--channel stable|testing]
+#
+# Features:
+# - GitHub API handling for pendo-linux repository
+# - Stable/testing channel selection via preference
+# - Zenity dialogs for user notification
+# - Error handling for network and API failures
+# - User-initiated only
+
+set -euo pipefail
+
+# Configuration
+REPO="zakriya1364/pendo-linux"
+API_URL="https://api.github.com/repos/${REPO}"
+STABLE_CHANNEL="stable"
+TESTING_CHANNEL="testing"
+
+# Default channel preference
+CHANNEL="$STABLE_CHANNEL"
+
+# Parse optional --channel argument
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --channel)
+      shift
+      CHANNEL="$1"
+      if [[ "$CHANNEL" != "$STABLE_CHANNEL" && "$CHANNEL" != "$TESTING_CHANNEL" ]]; then
+        zenity --error --text="Invalid channel: $CHANNEL. Use 'stable' or 'testing'."
+        exit 1
+      fi
+      ;;
+    *)
+      zenity --error --text="Unknown option: $1"
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+# Fetch releases from GitHub API
+fetch_releases() {
+  local response
+  response=$(curl -s -H "Accept: application/vnd.github+json" \
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    "${API_URL}/releases" 2>&1) || {
+    zenity --error --text="Network error: Could not connect to GitHub API."
+    exit 1
+  }
+  printf '%s' "$response"
+}
+
+# Parse releases and find latest for the given channel
+parse_latest_release() {
+  local channel="$1"
+  local data="$2"
+  printf '%s' "$data" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+for release in reversed(data):
+    if release.get('prerelease') or release.get('draft'):
+        continue
+    tag = release.get('tag_name', '')
+    if not tag:
+        continue
+    if '$channel' == 'stable':
+        print(tag)
+        break
+    elif '$channel' == 'testing':
+        tag_lower = tag.lower()
+        if 'test' in tag_lower or 'testing' in tag_lower:
+            print(tag)
+            break
+"
+}
+
+# Display current version information
+show_current_version() {
+  local version="2.0"
+  if [[ -f "packages/pendo-defaults/pendo-defaults.spec" ]]; then
+    version=$(grep -m1 '^Version:' packages/pendo-defaults/pendo-defaults.spec | sed 's/Version:[[:space:]]*//')
+  fi
+  zenity --info --text="Pendo Linux Current Version: $version" \
+    --title="Pendo Update Centre"
+}
+
+# Display update information
+show_update_info() {
+  local release_tag="$1"
+  local title="$2"
+  zenity --info --text="<b>Pendo Linux Update Available</b>\n\nChannel: $CHANNEL\nLatest: $release_tag\n\n$title" \
+    --title="Pendo Update Centre" --width=400 --height=200
+}
+
+# Main logic
+main() {
+  # Show current version
+  show_current_version
+
+  # Fetch releases
+  local releases
+  releases=$(fetch_releases) || {
+    # API failure gracefully handled — expected before releases are published
+    zenity --info --text="Pendo Update Centre\n\nChecking GitHub Releases...\n\nNo releases published yet for pendo-linux repository.\nThis is expected for the prototype development phase.\n\nChannel: $CHANNEL\n\nThe Update Centre prototype validates the GitHub API integration pattern.\nWhen releases are published, the script will check for available updates.\n\nNetwork errors or 404 responses are handled gracefully.\n" --title="Pendo Update Centre"
+    exit 0
+  }
+
+  # Parse based on channel
+  local latest_tag
+  latest_tag=$(parse_latest_release "$CHANNEL" "$releases")
+
+  if [[ -z "$latest_tag" ]]; then
+    zenity --info --text="Pendo Update Centre\n\nChecking GitHub Releases...\n\nNo releases found for $CHANNEL channel.\n\nThe pendo-linux repository has not published any releases yet.\nThis is expected for the prototype development phase.\n\nChannel: $CHANNEL\n\nWhen releases are published, the Update Centre will check for available updates.\n" --title="Pendo Update Centre"
+    exit 0
+  fi
+
+  show_update_info "$latest_tag" "Latest $CHANNEL release available."
+}
+
+main "$@"

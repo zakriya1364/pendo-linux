@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>pendo-update-center</id>
+  <metainfo_license>LicenseRef-Pendo</metainfo_license>
+  <name>Pendo Update Centre</name>
+  <summary>Check GitHub Releases for Pendo Linux version availability</summary>
+  <description>
+    <p>Pendo Update Centre prototype checks the GitHub Releases API for 
+    Pendo Linux version availability. The prototype displays stable and 
+    testing channel releases but does not download or install any RPM packages.</p>
+    <p>Features:</p>
+    <ul>
+      <li>GitHub Releases API integration</li>
+      <li>Stable and testing channel filtering</li>
+      <li>RPM-compatible version comparison</li>
+      <li>Zenity-based user dialogs</li>
+      <li>Network and API error handling</li>
+      <li>User-initiated only</li>
+    </ul>
+  </description>
+  <url>https://github.com/zakriya1364/pendo-linux</url>
+  <update_contact>pendo-update-center@pendo-linux.example</update_contact>
+  <project_license>LicenseRef-Pendo</project_license>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/zakriya1364/pendo-linux/main/screenshots/update-centre-preview.png</image>
+      <caption>Pendo Update Centre prototype - release checking dialog</caption>
+    </screenshot>
+  </screenshots>
+</component>

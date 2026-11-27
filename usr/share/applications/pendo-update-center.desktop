@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=Pendo Update Centre
+Comment=Check GitHub Releases for Pendo Linux version availability
+Exec=pendo-update-check --channel stable
+Terminal=false
+Type=Application
+Categories=Utility;
+Icon=pendo-logo
+X-Desktop-File-Install-Version=1.0
+Keywords=update;check;github;release;pendingo;
